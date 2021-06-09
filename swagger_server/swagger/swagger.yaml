@@ -1,0 +1,137 @@
+openapi: 3.0.2
+info:
+  title: Scraper API
+  contact:
+    name: Graham Guthrie
+    email: bcanvas1ad@gmail.com
+  version: "1.0"
+servers:
+- url: http://localhost/api/v1
+tags:
+- name: DFS Scraper API
+  description: Scrape daily fantasy sports data from provider sites
+paths:
+  /getPlayerList:
+    post:
+      tags:
+      - DFS Scraper API
+      summary: "Get list of daily fantasy players for a specified sport, platform\
+        \ and slate"
+      description: Get list of valid players
+      operationId: get_player_list
+      requestBody:
+        description: Provider schema
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Provider'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayerList'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+        
+      x-openapi-router-controller: swagger_server.controllers.dfs_scraper_api_controller
+components:
+  schemas:
+    Provider:
+      required:
+      - date
+      - platform
+      - name
+      - sport
+      type: object
+      properties:
+        name:
+          type: string
+          description: Daily fatansy sports data provider
+          example: Daily Fantasy Fuel
+        platform:
+          type: string
+          description: Daily fantasy sports competition platform
+          example: Draftkings
+        date:
+          type: string
+          description: Date
+          format: YYYY-MM-DD
+          example: 2021-06-03
+        sport:
+          type: string
+          description: Sport
+          example: NBA
+      description: Provider schema
+    Player:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Player Id
+          example: 1
+        date:
+          type: string
+          description: Date
+          format: YYYY-MM-DD
+          example: 2021-06-03
+        name:
+          type: string
+          description: Player Name
+          example: Lebron James
+        fn:
+          type: string
+          description: Player First Name
+          example: Lebron
+        ln:
+          type: string
+          description: Player Last Name
+          example: James
+        pos:
+          type: string
+          description: Position
+          example: C
+        inj:
+          type: string
+          description: Injury Status
+          example: O
+        team:
+          type: string
+          description: Team
+          example: LAL
+        salary:
+          type: integer
+          description: Salary
+          example: 7000
+        ppg_proj:
+          type: number
+          description: Projected fantasy points
+          format: float
+          example: 56.26
+        value_proj:
+          type: number
+          description: Projected fantasy value
+          format: float
+          example: 4.25
+      description: Player schema
+      example:
+        date: 2021-06-03
+        ln: James
+        value_proj: 4.25
+        inj: O
+        pos: C
+        ppg_proj: 56.26
+        name: Lebron James
+        fn: Lebron
+        id: 1
+        team: LAL
+        salary: 7000
+    PlayerList:
+      type: array
+      description: List of players
+      items:
+        $ref: '#/components/schemas/Player'
+
