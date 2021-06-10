@@ -1,22 +1,70 @@
 import connexion
 import six
-
+from datetime import date, datetime
 from swagger_server.models.player_list import PlayerList  # noqa: E501
-from swagger_server.models.provider import Provider  # noqa: E501
 from swagger_server.models.dff_scraper import DFFScraper
 from swagger_server import util
 
 
-def get_player_list(body=None):  # noqa: E501
+def get_date():  # noqa: E501
+    """Get contest date
+
+    Get contest date # noqa: E501
+
+
+    :rtype: str
+    """
+    return datetime.today().strftime('%Y-%m-%d')
+
+
+def get_player_list(provider, platform, sport, _date):  # noqa: E501
     """Get list of daily fantasy players for a specified sport, platform and slate
 
     Get list of valid players # noqa: E501
 
-    :param body: Scraper schema
-    :type body: dict | bytes
+    :param provider: Daily fatansy sports data provider
+    :type provider: str
+    :param platform: Daily fatansy sports contest website
+    :type platform: str
+    :param sport: Supported sport
+    :type sport: str
+    :param _date: Date
+    :type _date: str
 
     :rtype: PlayerList
     """
-    if connexion.request.is_json:
-        provider = Provider.from_dict(connexion.request.get_json())
-    return DFFScraper(provider).scrape()
+
+    return DFFScraper(sport, platform, _date).scrape()
+
+
+def get_supported_platforms():  # noqa: E501
+    """Get list of supported contest platforms
+
+    Get list of supported daily fantasy contest platforms # noqa: E501
+
+
+    :rtype: List[str]
+    """
+    return ["Draftkings", "Fanduel"]
+
+
+def get_supported_providers():  # noqa: E501
+    """Get list of supported data providers
+
+    Get list of supported daily fantasy data providers # noqa: E501
+
+
+    :rtype: List[str]
+    """
+    return ["Daily Fantasy Fuel"]
+
+
+def get_supported_sports():  # noqa: E501
+    """Get list of supported sports
+
+    Get list of supported sport codes # noqa: E501
+
+
+    :rtype: List[str]
+    """
+    return ["MLB", "NBA"]
