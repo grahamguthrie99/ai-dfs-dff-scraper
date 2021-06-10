@@ -11,20 +11,143 @@ tags:
 - name: DFS Scraper API
   description: Scrape daily fantasy sports data from provider sites
 paths:
-  /getPlayerList:
-    post:
+  /getSupportedProviders:
+    get:
+      tags:
+      - DFS Scraper API
+      summary: Get list of supported data providers
+      description: Get list of supported daily fantasy data providers
+      operationId: get_supported_providers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.dfs_scraper_api_controller
+  /getSupportedPlatforms:
+    get:
+      tags:
+      - DFS Scraper API
+      summary: Get list of supported contest platforms
+      description: Get list of supported daily fantasy contest platforms
+      operationId: get_supported_platforms
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.dfs_scraper_api_controller
+  /getSupportedSports:
+    get:
+      tags:
+      - DFS Scraper API
+      summary: Get list of supported sports
+      description: Get list of supported sport codes
+      operationId: get_supported_sports
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  maxLength: 3
+                  minLength: 3
+                  type: string
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.dfs_scraper_api_controller
+  /getDate:
+    get:
+      tags:
+      - DFS Scraper API
+      summary: Get contest date
+      description: Get contest date
+      operationId: get_date
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Date
+                format: YYYY-MM-DD
+                example: 2021-06-03T00:00:00.000Z
+                x-content-type: application/json
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      x-openapi-router-controller: swagger_server.controllers.dfs_scraper_api_controller
+  /getPlayerList/{provider}/{platform}/{sport}/{_date}:
+    get:
       tags:
       - DFS Scraper API
       summary: "Get list of daily fantasy players for a specified sport, platform\
         \ and slate"
       description: Get list of valid players
       operationId: get_player_list
-      requestBody:
-        description: Provider schema
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Provider'
+      parameters:
+      - name: provider
+        in: path
+        description: Daily fatansy sports data provider
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: DailyFantasyFuel
+      - name: platform
+        in: path
+        description: Daily fatansy sports contest website
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: Draftkings or Fanduel
+      - name: sport
+        in: path
+        description: Supported sport
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: NBA or MLB
+      - name: _date
+        in: path
+        description: Date
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: YYYY-MM-DD
+        example: 2021-06-03
       responses:
         "200":
           description: OK
@@ -36,36 +159,9 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-        
       x-openapi-router-controller: swagger_server.controllers.dfs_scraper_api_controller
 components:
   schemas:
-    Provider:
-      required:
-      - date
-      - platform
-      - name
-      - sport
-      type: object
-      properties:
-        name:
-          type: string
-          description: Daily fatansy sports data provider
-          example: Daily Fantasy Fuel
-        platform:
-          type: string
-          description: Daily fantasy sports competition platform
-          example: Draftkings
-        date:
-          type: string
-          description: Date
-          format: YYYY-MM-DD
-          example: 2021-06-03
-        sport:
-          type: string
-          description: Sport
-          example: NBA
-      description: Provider schema
     Player:
       type: object
       properties:
@@ -77,7 +173,7 @@ components:
           type: string
           description: Date
           format: YYYY-MM-DD
-          example: 2021-06-03
+          example: 2021-06-03T00:00:00.000Z
         name:
           type: string
           description: Player Name
@@ -118,7 +214,7 @@ components:
           example: 4.25
       description: Player schema
       example:
-        date: 2021-06-03
+        date: 2021-06-03T00:00:00.000Z
         ln: James
         value_proj: 4.25
         inj: O
