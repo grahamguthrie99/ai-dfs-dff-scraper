@@ -1,1 +1,1 @@
-web: gunicorn aidfsscraper.wsgi
+web: python3 -m swagger_server
