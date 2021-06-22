@@ -18,7 +18,7 @@ def get_date():  # noqa: E501
     d = datetime.now()
     timezone = pytz.timezone("America/New_York")
     d_aware = timezone.localize(d)
-    return d_aware.strftime('%Y-%m-%d')
+    return d_aware.astimezone(timezone).strftime('%Y-%m-%d')
 
 
 def get_player_list(provider, platform, sport, _date):  # noqa: E501
