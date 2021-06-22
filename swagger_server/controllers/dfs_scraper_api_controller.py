@@ -1,6 +1,7 @@
 import connexion
 import six
 from datetime import date, datetime
+import pytz
 from swagger_server.models.player_list import PlayerList  # noqa: E501
 from swagger_server.models.dff_scraper import DFFScraper
 from swagger_server import util
@@ -14,7 +15,10 @@ def get_date():  # noqa: E501
 
     :rtype: str
     """
-    return datetime.today().strftime('%Y-%m-%d')
+    d = datetime.now()
+    timezone = pytz.timezone("America/New_York")
+    d_aware = timezone.localize(d)
+    return d_aware.strftime('%Y-%m-%d')
 
 
 def get_player_list(provider, platform, sport, _date):  # noqa: E501
