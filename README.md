@@ -1,3 +1,5 @@
+![Title Image](./ai-dfs-scraper.png)
+
 # Swagger generated server
 
 ## Overview
